@@ -1,6 +1,6 @@
 <?php
 
-namespace Basantashubhu\ArrayModel\Traits;
+namespace Basanta\ArrayModel\Traits;
 
 trait CreateUpdate
 {

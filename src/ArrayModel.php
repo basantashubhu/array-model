@@ -1,6 +1,6 @@
 <?php
 
-namespace Basantashubhu\ArrayModel;
+namespace Basanta\ArrayModel;
 
 use Illuminate\Contracts\Support\Arrayable;
 
