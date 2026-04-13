@@ -7,12 +7,13 @@ use Illuminate\Contracts\Support\Arrayable;
 class ArrayModel extends \ArrayObject implements Arrayable
 {
     use Traits\CreateUpdate;
+    use Traits\HasRelationship;
 
     public static $instance = [];
 
     public static function factory()
     {
-        if(is_subclass_of(get_called_class(), self::class)) {
+        if (is_subclass_of(get_called_class(), self::class)) {
             return static::$instance[get_called_class()] ??= Collection::make();
         } else {
             throw new \Exception("Class " . get_called_class() . " must extend " . self::class);
@@ -36,7 +37,12 @@ class ArrayModel extends \ArrayObject implements Arrayable
 
     public function offsetGet($name)
     {
-        return parent::offsetExists($name) ? parent::offsetGet($name) : null;
+        if (parent::offsetExists($name)) {
+            return parent::offsetGet($name);
+        } elseif (method_exists($this, $name)) {
+            return $this->$name();
+        }
+        return null;
     }
 
     public function toArray()
