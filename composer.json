@@ -1,5 +1,5 @@
 {
-    "name": "basantashubhu/array-model",
+    "name": "basanta/array-model",
     "description": "A package to handle array data as a model in Laravel.",
     "type": "library",
     "require": {
