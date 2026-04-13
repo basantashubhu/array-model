@@ -11,7 +11,7 @@ class ArrayModel extends \ArrayObject implements Arrayable
     /**
      * Per-model-class in-memory collection instances.
      *
-     * @var array<class-string,Collection>
+     * @var array<class-string, Collection>
      */
     public static $instance = [];
 
@@ -20,10 +20,12 @@ class ArrayModel extends \ArrayObject implements Arrayable
      */
     public static function factory(): Collection
     {
-        if(is_subclass_of(get_called_class(), self::class)) {
-            return static::$instance[get_called_class()] ??= Collection::make();
+        $calledClass = static::class;
+
+        if (is_subclass_of($calledClass, self::class)) {
+            return static::$instance[$calledClass] ??= Collection::make();
         } else {
-            throw new \Exception("Class " . get_called_class() . " must extend " . self::class);
+            throw new \LogicException("Class " . $calledClass . " must extend " . self::class);
         }
     }
 

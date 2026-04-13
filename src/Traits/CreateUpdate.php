@@ -24,7 +24,7 @@ trait CreateUpdate
     /**
      * Delete model records that match the given conditions.
      */
-    public function delete(array $where): bool
+    public static function delete(array $where): bool
     {
         return static::factory()->where($where)->delete();
     }
