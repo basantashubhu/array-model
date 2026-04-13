@@ -10,13 +10,9 @@ trait CreateUpdate
         return $item;
     }
 
-    public static function update(array $where, array $attributes): void
+    public static function update(array $where, array $attributes): bool
     {
-        foreach (static::factory()->where($where) as $item) {
-            foreach ($attributes as $key => $value) {
-                $item->$key = $value;
-            }
-        }
+        return static::factory()->where($where)->update($attributes);
     }
 
     public function delete(array $where): bool
