@@ -9,7 +9,9 @@ use Illuminate\Support\Arr;
  */
 class Collection extends \Illuminate\Support\Collection
 {
-
+    /**
+     * Filter the collection, supporting array-based multi-condition queries.
+     */
     public function where($key, $operator = null, $value = null): static
     {
         if (is_array($key)) {
@@ -19,6 +21,9 @@ class Collection extends \Illuminate\Support\Collection
         return parent::where(...func_get_args());
     }
 
+    /**
+     * Filter items by many conditions.
+     */
     public function whereMany(array $conditions): static
     {
         $results = [];
@@ -70,6 +75,9 @@ class Collection extends \Illuminate\Support\Collection
         return new static($results);
     }
 
+    /**
+     * Update all matched model items with the given attributes.
+     */
     public function update(array $attributes): bool
     {
         foreach ($this->items as $item) {
@@ -81,6 +89,9 @@ class Collection extends \Illuminate\Support\Collection
         return true;
     }
 
+    /**
+     * Delete all matched model items from the source store.
+     */
     public function delete(): bool
     {
         $items = $this->items;
