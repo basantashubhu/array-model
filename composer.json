@@ -1,0 +1,21 @@
+{
+    "name": "basantashubhu/array-model",
+    "description": "A package to handle array data as a model in Laravel.",
+    "type": "library",
+    "require": {
+        "php": "^8.0",
+        "laravel/framework": ">=10.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Basantashubhu\\ArrayModel\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Basanta Shubhu",
+            "email": "callmebasanta44@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev"
+}
