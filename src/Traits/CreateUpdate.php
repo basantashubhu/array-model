@@ -12,19 +12,15 @@ trait CreateUpdate
 
     public static function update(array $where, array $attributes): void
     {
-        foreach (static::factory() as $item) {
-            $match = true;
-            foreach ($where as $key => $value) {
-                if ($item->$key !== $value) {
-                    $match = false;
-                    break;
-                }
-            }
-            if ($match) {
-                foreach ($attributes as $key => $value) {
-                    $item->$key = $value;
-                }
+        foreach (static::factory()->where($where) as $item) {
+            foreach ($attributes as $key => $value) {
+                $item->$key = $value;
             }
         }
+    }
+
+    public function delete(array $where): bool
+    {
+        return static::factory()->where($where)->delete();
     }
 }

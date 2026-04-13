@@ -3,21 +3,20 @@
 namespace Basantashubhu\ArrayModel;
 
 use Illuminate\Contracts\Support\Arrayable;
-use Illuminate\Support\Collection;
 
 class ArrayModel extends \ArrayObject implements Arrayable
 {
     use Traits\CreateUpdate;
 
-    public static $instance = null;
+    public static $instance = [];
 
     public static function factory()
     {
-        if (static::$instance === null) {
-            static::$instance = Collection::make();
+        if(is_subclass_of(get_called_class(), self::class)) {
+            return static::$instance[get_called_class()] ??= Collection::make();
+        } else {
+            throw new \Exception("Class " . get_called_class() . " must extend " . self::class);
         }
-
-        return static::$instance;
     }
 
     public static function __callStatic($method, $args)
