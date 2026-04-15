@@ -7,22 +7,48 @@ use Basanta\ArrayModel\Collection;
 
 trait HasRelationship
 {
+    /**
+     * Define a one-to-many relationship.
+     * @param class-string $relatedClass
+     * @param string $foreignKey
+     * @param string $localKey
+     * @return Collection
+     */
     public function hasMany($relatedClass, $foreignKey, $localKey): Collection
     {
         return $relatedClass::factory()->where($foreignKey, $this->$localKey);
     }
 
+    /**
+     * Define a one-to-one relationship.
+     * @param class-string $relatedClass
+     * @param string $foreignKey
+     * @param string $localKey
+     * @return ArrayModel|null
+     */
     public function hasOne($relatedClass, $foreignKey, $localKey): ?ArrayModel
     {
         return $relatedClass::factory()->where($foreignKey, $this->$localKey)->first();
     }
 
+    /**
+     * Define an inverse one-to-many relationship.
+     * @param class-string $relatedClass
+     * @param string $foreignKey
+     * @param string $ownerKey
+     * @return ArrayModel|null
+     */
     public function belongsTo($relatedClass, $foreignKey, $ownerKey): ?ArrayModel
     {
         return $relatedClass::factory()->where($ownerKey, $this->$foreignKey)->first();
     }
 
-    public static function load(...$relationship): Collection 
+    /**
+     * Lazy load relationships for all models in the collection.
+     * @param string|array ...$relationship
+     * @return Collection
+     */
+    public static function load(...$relationship): Collection
     {
         $relationships = is_array($relationship[0]) ? $relationship[0] : $relationship;
 
