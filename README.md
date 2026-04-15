@@ -9,6 +9,8 @@ It is useful when you want model-like behavior without a database layer.
 - Define simple model classes backed by arrays
 - Create records with model-like syntax
 - Query records with `where()` and multi-condition filtering
+- Define model relationships (`hasMany`, `hasOne`, `belongsTo`)
+- Lazy load relationships on first property access or in bulk with `load()`
 - Bulk update filtered results
 - Delete filtered results from the in-memory store
 - Convert model store to plain arrays
@@ -62,6 +64,48 @@ Get all records as array:
 $all = User::array();
 ```
 
+## Relationships and Lazy Loading
+
+Define relationships directly on your array model:
+
+```php
+<?php
+
+namespace App\ArrayModels;
+
+use Basanta\ArrayModel\ArrayModel;
+
+class User extends ArrayModel
+{
+    public function posts()
+    {
+        return $this->hasMany(Post::class, 'user_id', 'id');
+    }
+}
+
+class Post extends ArrayModel
+{
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+}
+```
+
+Lazy load on first access:
+
+```php
+$user = User::where('id', 1)->first();
+$posts = $user->posts; // relationship method is executed and cached
+```
+
+Bulk lazy load for all records:
+
+```php
+User::load('posts');
+User::load(['posts']);
+```
+
 ## How It Works
 
 Each model subclass gets its own in-memory `Collection` instance (stored statically per class).  
@@ -83,8 +127,17 @@ Finds matching items using `where($where)` and updates them.
 #### `static array(): array`
 Returns the full model store as a plain array.
 
+#### `static load(...$relationship): Basanta\ArrayModel\Collection`
+Lazy-loads one or more relationships for all records in the model store.  
+Accepts variadic relation names or a single array of relation names.
+
 #### `toArray(): array`
 Converts the current model object to a plain array.
+
+#### Relationship helpers
+- `hasMany($relatedClass, $foreignKey, $localKey): Basanta\ArrayModel\Collection`
+- `hasOne($relatedClass, $foreignKey, $localKey): ?Basanta\ArrayModel\ArrayModel`
+- `belongsTo($relatedClass, $foreignKey, $ownerKey): ?Basanta\ArrayModel\ArrayModel`
 
 #### Magic attributes
 - `$model->key` reads via `offsetGet`
@@ -166,6 +219,7 @@ $selected = User::where([
 - Data is **in-memory only** (no database persistence).
 - Store lifetime is tied to the current PHP process/request lifecycle.
 - Records are class-scoped (each model subclass has an isolated store).
+- Relationship results are cached on first property access (e.g. `$user->posts`).
 - This package is best suited for transient/model-like data handling, testing helpers, or non-persistent workflows.
 
 ## Error Handling
@@ -175,6 +229,7 @@ The package throws exceptions for:
 - Calling internals from classes not extending `ArrayModel`
 - Invalid `whereMany` condition formats
 - Unsupported query operators
+- Calling `load()` with a relationship method that does not exist
 
 Use `try/catch` around dynamic filter construction if conditions may be user-defined.
 
