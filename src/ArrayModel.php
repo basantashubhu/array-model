@@ -62,7 +62,7 @@ class ArrayModel extends \ArrayObject implements Arrayable
         if (parent::offsetExists($name)) {
             return parent::offsetGet($name);
         } elseif (method_exists($this, $name)) {
-            return $this->$name();
+            return $this->$name ??= $this->$name();
         }
         return null;
     }
