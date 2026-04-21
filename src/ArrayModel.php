@@ -8,6 +8,7 @@ class ArrayModel extends \ArrayObject implements Arrayable
 {
     use Traits\CreateUpdate;
     use Traits\HasRelationship;
+    use Traits\AttributeCast;
 
     /**
      * Per-model-class in-memory collection instances.
@@ -55,12 +56,24 @@ class ArrayModel extends \ArrayObject implements Arrayable
     }
 
     /**
+     * Set a value at a given offset with automatic type casting.
+     *
+     * @param mixed $key The offset/key to set
+     * @param mixed $value The value to set at the given offset
+     * @return void
+     */
+    public function offsetSet(mixed $key, mixed $value): void
+    {
+        parent::offsetSet($key, $this->setCastedAttribute($key, $value));
+    }
+
+    /**
      * Read a key from the underlying array and return null if missing.
      */
     public function offsetGet($name): mixed
     {
         if (parent::offsetExists($name)) {
-            return parent::offsetGet($name);
+            return $this->getCastedAttribute($name, parent::offsetGet($name));
         } elseif (method_exists($this, $name)) {
             return $this->$name ??= $this->$name();
         }
